@@ -97,3 +97,19 @@ ionic cap open ios
 ```
 
 Now you can run the app on a physical device or a virtual emulator, you can also build the app from the menu bar
+
+## Frontend React UI Integration
+
+This project has been extended with a new React UI (`/mvp-ui`) that includes:
+
+- Firebase Authentication (Login / Signup)
+- Upload, Download, Delete Invoices via Firestore
+- Uses Ionic React components
+
+### To Run the UI
+
+```bash
+cd mvp-ui
+npm install
+npm run dev
+
