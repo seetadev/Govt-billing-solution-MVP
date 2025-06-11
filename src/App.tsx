@@ -1,31 +1,48 @@
 import { IonApp, setupIonicReact } from "@ionic/react";
 import Home from "./pages/Home";
+import { useEffect } from 'react';
+import { AdMob, BannerAdSize, BannerAdPosition } from '@capacitor-community/admob';
 
-/* Core CSS required for Ionic components to work properly */
+/* CSS imports */
 import "@ionic/react/css/core.css";
-
-/* Basic CSS for apps built with Ionic */
 import "@ionic/react/css/normalize.css";
 import "@ionic/react/css/structure.css";
 import "@ionic/react/css/typography.css";
-
-/* Optional CSS utils that can be commented out */
 import "@ionic/react/css/padding.css";
 import "@ionic/react/css/float-elements.css";
 import "@ionic/react/css/text-alignment.css";
 import "@ionic/react/css/text-transformation.css";
 import "@ionic/react/css/flex-utils.css";
 import "@ionic/react/css/display.css";
-
-/* Theme variables */
 import "./theme/variables.css";
 
 setupIonicReact();
 
-const App: React.FC = () => (
-  <IonApp>
-    <Home />
-  </IonApp>
-);
+const App: React.FC = () => {
+  useEffect(() => {
+    const showAd = async () => {
+      await AdMob.initialize({
+        requestTrackingAuthorization: true,
+        initializeForTesting: false,
+      });
+
+      await AdMob.showBanner({
+        adId: 'ca-app-pub-6312756313711545/7197167387', 
+        adSize: BannerAdSize.ADAPTIVE_BANNER,
+        position: BannerAdPosition.BOTTOM_CENTER,
+        margin: 0,
+        isTesting: false,
+      });
+    };
+
+    showAd();
+  }, []);
+
+  return (
+    <IonApp>
+      <Home />
+    </IonApp>
+  );
+};
 
 export default App;
