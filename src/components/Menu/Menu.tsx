@@ -3,10 +3,10 @@ import * as AppGeneral from "../socialcalc/index.js";
 import { File, Local } from "../Storage/LocalStorage";
 import { isPlatform, IonToast } from "@ionic/react";
 import { EmailComposer } from "capacitor-email-composer";
-import { Printer } from "@ionic-native/printer";
 import { IonActionSheet, IonAlert } from "@ionic/react";
-import { saveOutline, save, mail, print } from "ionicons/icons";
+import { saveOutline, save, mail, print, documentTextOutline, documentOutline } from "ionicons/icons";
 import { APP_NAME } from "../../app-data.js";
+import { ExportService } from "../../services/ExportService";
 
 const Menu: React.FC<{
   showM: boolean;
@@ -15,11 +15,12 @@ const Menu: React.FC<{
   updateSelectedFile: Function;
   store: Local;
   bT: number;
-}> = (props) => {
-  const [showAlert1, setShowAlert1] = useState(false);
+}> = (props) => {  const [showAlert1, setShowAlert1] = useState(false);
   const [showAlert2, setShowAlert2] = useState(false);
   const [showAlert3, setShowAlert3] = useState(false);
   const [showAlert4, setShowAlert4] = useState(false);
+  const [showAlert5, setShowAlert5] = useState(false); // PDF export alert
+  const [showAlert6, setShowAlert6] = useState(false); // CSV export alert
   const [showToast1, setShowToast1] = useState(false);
   const [toastMessage, setToastMessage] = useState("");
   /* Utility functions */
@@ -55,17 +56,36 @@ const Menu: React.FC<{
     }
     return filename;
   };
-
   const doPrint = () => {
     if (isPlatform("hybrid")) {
-      const printer = Printer;
-      printer.print(AppGeneral.getCurrentHTMLContent());
+      // For mobile devices, we'll use PDF export and let the user print from there
+      setToastMessage("Please use 'Export PDF' to generate a printable file");
+      setShowToast1(true);
     } else {
       const content = AppGeneral.getCurrentHTMLContent();
-      // useReactToPrint({ content: () => content });
-      const printWindow = window.open("/printwindow", "Print Invoice");
-      printWindow.document.write(content);
-      printWindow.print();
+      const printWindow = window.open("", "Print Invoice", "width=800,height=600");
+      if (printWindow) {
+        printWindow.document.write(`
+          <html>
+            <head>
+              <title>Invoice</title>
+              <style>
+                body { font-family: Arial, sans-serif; margin: 20px; }
+                table { border-collapse: collapse; width: 100%; }
+                td, th { border: 1px solid #ddd; padding: 8px; text-align: left; }
+                @media print {
+                  button { display: none; }
+                }
+              </style>
+            </head>
+            <body>
+              ${content}
+              <button onclick="window.print(); window.close();" style="margin-top: 20px; padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px;">Print</button>
+            </body>
+          </html>
+        `);
+        printWindow.document.close();
+      }
     }
   };
   const doSave = () => {
@@ -112,7 +132,6 @@ const Menu: React.FC<{
       }
     }
   };
-
   const sendEmail = () => {
     if (isPlatform("hybrid")) {
       const content = AppGeneral.getCurrentHTMLContent();
@@ -131,6 +150,41 @@ const Menu: React.FC<{
       alert("This Functionality works on Anroid/IOS devices");
     }
   };
+  const exportToPDF = async () => {
+    try {
+      const fileName = props.file === "default" ? "invoice" : props.file;
+      const result = await ExportService.exportToPDF(fileName);
+      
+      if (result.success) {
+        setToastMessage(result.message);
+        setShowAlert5(true);
+      } else {
+        setToastMessage(result.message);
+        setShowToast1(true);
+      }
+    } catch (error) {
+      setToastMessage("Failed to export PDF: " + error.message);
+      setShowToast1(true);
+    }
+  };
+
+  const exportToCSV = async () => {
+    try {
+      const fileName = props.file === "default" ? "invoice" : props.file;
+      const result = await ExportService.exportToCSV(fileName);
+      
+      if (result.success) {
+        setToastMessage(result.message);
+        setShowAlert6(true);
+      } else {
+        setToastMessage(result.message);
+        setShowToast1(true);
+      }
+    } catch (error) {
+      setToastMessage("Failed to export CSV: " + error.message);
+      setShowToast1(true);
+    }
+  };
 
   return (
     <React.Fragment>
@@ -138,8 +192,7 @@ const Menu: React.FC<{
         animated
         keyboardClose
         isOpen={props.showM}
-        onDidDismiss={() => props.setM()}
-        buttons={[
+        onDidDismiss={() => props.setM()}        buttons={[
           {
             text: "Save",
             icon: saveOutline,
@@ -154,6 +207,22 @@ const Menu: React.FC<{
             handler: () => {
               setShowAlert3(true);
               console.log("Save As clicked");
+            },
+          },
+          {
+            text: "Export PDF",
+            icon: documentOutline,
+            handler: () => {
+              exportToPDF();
+              console.log("Export PDF clicked");
+            },
+          },
+          {
+            text: "Export CSV",
+            icon: documentTextOutline,
+            handler: () => {
+              exportToCSV();
+              console.log("Export CSV clicked");
             },
           },
           {
@@ -212,8 +281,7 @@ const Menu: React.FC<{
             },
           },
         ]}
-      />
-      <IonAlert
+      />      <IonAlert
         animated
         isOpen={showAlert4}
         onDidDismiss={() => setShowAlert4(false)}
@@ -225,6 +293,22 @@ const Menu: React.FC<{
         }
         buttons={["Ok"]}
       />
+      <IonAlert
+        animated
+        isOpen={showAlert5}
+        onDidDismiss={() => setShowAlert5(false)}
+        header="PDF Export"
+        message={toastMessage}
+        buttons={["Ok"]}
+      />
+      <IonAlert
+        animated
+        isOpen={showAlert6}
+        onDidDismiss={() => setShowAlert6(false)}
+        header="CSV Export"
+        message={toastMessage}
+        buttons={["Ok"]}
+      />
       <IonToast
         animated
         isOpen={showToast1}
@@ -234,7 +318,7 @@ const Menu: React.FC<{
         }}
         position="bottom"
         message={toastMessage}
-        duration={500}
+        duration={2000}
       />
     </React.Fragment>
   );

@@ -321,6 +321,22 @@ export function getSpreadsheetContent() {
   return SocialCalc.WorkBookControlSaveSheet();
 }
 
+export function getSpreadsheetData() {
+  var control = SocialCalc.GetCurrentWorkBookControl();
+  if (!control || !control.workbook || !control.workbook.spreadsheet) {
+    return null;
+  }
+
+  var editor = control.workbook.spreadsheet.editor;
+  var sheet = editor.context.sheetobj;
+
+  return {
+    cells: sheet.cells,
+    names: sheet.names,
+    attribs: sheet.attribs,
+  };
+}
+
 export function getCurrentHTMLContent() {
   var control = SocialCalc.GetCurrentWorkBookControl();
   return control.workbook.spreadsheet.CreateSheetHTML();
