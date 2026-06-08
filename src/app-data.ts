@@ -3906,3 +3906,98 @@ export let DATA = {
     },
   },
 };
+//IN-APP PURCHASE ITEMS
+export let INAPP_ITEMS = [
+  "2014inv10Pdf",
+  "2014inv25Pdf",
+  "2014inv50Pdf",
+  "2014inv100Pdf",
+  "2014inv10ft",
+  "2015inv10fb",
+  "2015inv10tw",
+  "2015inv10wa",
+  "2015inv10sms",
+  "2015inv10save",
+  "2015invCloud",
+  "2015invSavePrintEmail",
+  "2015inv500SavePrintEmail",
+  "2015inv1000SavePrintEmail",
+];
+
+export let PDF_10 = "2014inv10Pdf";
+
+export let PDF_25 = "2014inv25Pdf";
+
+export let PDF_50 = "2014inv50Pdf";
+
+export let PDF_100 = "2014inv100Pdf";
+
+export let SHARE_PDF = "2014inv10ft";
+
+export let FB_10 = "2015inv10fb";
+
+export let TW_10 = "2015inv10tw";
+
+export let WA_10 = "2015inv10wa";
+
+export let SMS_10 = "2015inv10sms";
+
+export let SAVE_PDF = "2015inv10save";
+
+export let CLOUD_SAVE = "2015invCloud";
+
+export let SPE_10 = "2015invSavePrintEmail";
+
+export let SPE_500 = "2015inv500SavePrintEmail";
+
+export let SPE_1000 = "2015inv1000SavePrintEmail";
+
+export let INAPPLOCAL = [
+  { Feature: "10Pdf", Id: "2014inv10Pdf", Purchase: "No", Consumed: 0, Own: 0 },
+  { Feature: "25Pdf", Id: "2014inv25Pdf", Purchase: "No", Consumed: 0, Own: 0 },
+  { Feature: "50Pdf", Id: "2014inv50Pdf", Purchase: "No", Consumed: 0, Own: 0 },
+  {
+    Feature: "100Pdf",
+    Id: "2014inv100Pdf",
+    Purchase: "No",
+    Consumed: 0,
+    Own: 0,
+  },
+  { Feature: "10Fb", Id: "2015inv10fb", Purchase: "No", Consumed: 0, Own: 0 },
+  { Feature: "10Tw", Id: "2015inv10tw", Purchase: "No", Consumed: 0, Own: 0 },
+  { Feature: "10Wa", Id: "2015inv10wa", Purchase: "No", Consumed: 0, Own: 0 },
+  { Feature: "10Sms", Id: "2015inv10sms", Purchase: "No", Consumed: 0, Own: 0 },
+  {
+    Feature: "10iBooks",
+    Id: "2015inv10save",
+    Purchase: "No",
+    Consumed: 0,
+    Own: 0,
+  },
+  {
+    Feature: "email-print-save",
+    Id: "2015invSavePrintEmail",
+    Purchase: "Yes",
+    Consumed: 0,
+    Own: 10,
+  },
+  {
+    Feature: "email-second-print-save",
+    Id: "2015inv500SavePrintEmail",
+    Purchase: "No",
+    Consumed: 0,
+    Own: 0,
+  },
+  {
+    Feature: "email-third-print-save",
+    Id: "2015inv1000SavePrintEmail",
+    Purchase: "No",
+    Consumed: 0,
+    Own: 0,
+  },
+];
+
+export let CLOUDINAPP = [
+  { Feature: "save", Id: "2015invCloud", Purchase: "Yes", Consumed: 0, Own: 5 },
+];
+

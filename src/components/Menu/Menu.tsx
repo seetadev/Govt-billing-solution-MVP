@@ -3,11 +3,22 @@ import * as AppGeneral from "../socialcalc/index.js";
 import { File, Local } from "../Storage/LocalStorage";
 import { isPlatform, IonToast } from "@ionic/react";
 import { EmailComposer } from "capacitor-email-composer";
-import { Printer } from "@ionic-native/printer";
+import { Capacitor } from "@capacitor/core";
 import { IonActionSheet, IonAlert } from "@ionic/react";
 import { saveOutline, save, mail, print } from "ionicons/icons";
 import { APP_NAME } from "../../app-data.js";
 
+let Printer: any;
+if (Capacitor.isNativePlatform()) {
+  // Dynamically import only on native platforms to prevent Vite build error
+  import('@ionic-native/printer')
+    .then(module => {
+      Printer = module.Printer;
+    })
+    .catch(() => {
+      console.warn('Printer plugin not available.');
+    });
+}
 const Menu: React.FC<{
   showM: boolean;
   setM: Function;
